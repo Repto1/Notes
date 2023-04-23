@@ -17,6 +17,18 @@ app.get("/tasks", (req, res) => {
 
 app.use(express.json());
 
+// DataBase connection
+
+const conn = require("./db/conn");
+
+conn();
+
+// Router
+
+const routes = require("./routes/router");
+
+app.use("/api", routes);
+
 app.listen(port, function () {
   console.log(`API ADDRESS: http://localhost:${port}`);
 });

@@ -1,0 +1,25 @@
+POST http://localhost:3000/api/notes
+Content-Type: application/json
+
+{
+    "title": "FODAS"
+}
+
+###
+
+GET http://localhost:3000/api/notes
+
+###
+
+GET http://localhost:3000/api/notes/6445b000aac5429cb36adf88
+
+###
+DELETE http://localhost:3000/api/notes/6445a8ae621def7575da47f9
+
+###
+PUT http://localhost:3000/api/notes/6445b000aac5429cb36adf88
+Content-Type: application/json
+
+{
+    "title": "isso é muito irado"
+}
