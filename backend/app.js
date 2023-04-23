@@ -18,5 +18,5 @@ app.get("/tasks", (req, res) => {
 app.use(express.json());
 
 app.listen(port, function () {
-  console.log(`API rodando em http://localhost:${port}`);
+  console.log(`API ADDRESS: http://localhost:${port}`);
 });
