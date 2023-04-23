@@ -9,11 +9,11 @@ let tasks = [
   { id: 3, title: "Fazer exercícios", completed: true },
 ];
 
+app.use(cors());
+
 app.get("/tasks", (req, res) => {
   res.json(tasks);
 });
-
-app.use(cors());
 
 app.use(express.json());
 
