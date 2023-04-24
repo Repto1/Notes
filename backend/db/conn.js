@@ -6,7 +6,7 @@ async function main() {
     mongoose.set("strictQuery", true);
 
     await mongoose.connect(
-      "mongodb+srv://SuperUser:vljS16ohnO09lrx0@cluster0.ynorlk8.mongodb.net/?retryWrites=true&w=majority"
+      "<your mongoDB URI>"
     );
 
     console.log("Connected");
