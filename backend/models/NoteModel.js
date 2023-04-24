@@ -8,10 +8,13 @@ const noteSchema = new Schema(
       type: String,
       required: true,
     },
-
     creationDate: {
       type: String,
       required: false,
+    },
+    completed: {
+      type: Boolean,
+      default: false,
     },
     completionDate: {
       type: String,

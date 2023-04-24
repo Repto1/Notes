@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:html';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -22,6 +23,8 @@ class TaskList extends StatefulWidget {
 class _TaskListState extends State<TaskList> {
   List tasks = [];
 
+  get index => int;
+
   @override
   void initState() {
     super.initState();
@@ -29,7 +32,8 @@ class _TaskListState extends State<TaskList> {
   }
 
   Future<void> fetchTasks() async {
-    final response = await http.get(Uri.parse('http://localhost:3000/tasks'));
+    final response =
+        await http.get(Uri.parse('http://localhost:3000/api/notes'));
     final List<dynamic> tasksJson = json.decode(response.body);
     setState(() {
       tasks = tasksJson;
@@ -40,24 +44,66 @@ class _TaskListState extends State<TaskList> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('Lista de Tarefas'),
+        title: const Text('Lista de Tarefas'),
       ),
-      body: ListView.builder(
-        itemCount: tasks.length,
-        itemBuilder: (BuildContext context, int index) {
-          final task = tasks[index];
-          return ListTile(
-            title: Text(task['title']),
-            trailing: Checkbox(
-              value: task['completed'],
-              onChanged: (bool? value) {
-                setState(() {
-                  task['completed'] = value!;
-                });
+      body: Stack(
+        children: [
+          Container(
+            child: ListView.builder(
+              itemCount: tasks.length,
+              itemBuilder: (BuildContext context, int index) {
+                final task = tasks[index];
+                return ListTile(
+                  title: Text(task['title']),
+                  trailing: Stack(
+                    children: [
+                      Checkbox(
+                        value: task['completed'],
+                        onChanged: (bool? value) {
+                          setState(() {
+                            task['completed'] = value!;
+                          });
+                        },
+                      ),
+                      ElevatedButton(
+                        onPressed: () async {
+                          var taskid = task['id'];
+                          var request = new HttpRequest();
+                          request.open('DELETE',
+                              'http://localhost:3000/api/notes/$taskid');
+                          request.send();
+                        },
+                        child: Text('+'),
+                      ),
+                    ],
+                  ),
+                );
               },
             ),
-          );
-        },
+          ),
+          Align(
+            alignment: Alignment.bottomCenter,
+            child: Row(
+              children: [
+                Expanded(
+                    child: Container(
+                  margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
+                  color: Colors.grey,
+                  child: TextField(
+                    decoration: InputDecoration(hintText: 'adicionar nota'),
+                  ),
+                )),
+                Container(
+                  margin: EdgeInsets.only(right: 20, bottom: 20),
+                  child: ElevatedButton(
+                    onPressed: () {},
+                    child: Text('+'),
+                  ),
+                )
+              ],
+            ),
+          )
+        ],
       ),
     );
   }
