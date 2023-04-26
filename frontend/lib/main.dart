@@ -49,6 +49,7 @@ class _TaskListState extends State<TaskList> {
         Uri.parse('http://localhost:3000/api/notes/'),
         body: json.encode(body),
         headers: {'Content-Type': 'application/json'});
+    fetchTasks();
   }
 
   @override
@@ -85,6 +86,7 @@ class _TaskListState extends State<TaskList> {
                             request.open('DELETE',
                                 'http://localhost:3000/api/notes/$taskid');
                             request.send();
+                            fetchTasks();
                           },
                           child: Text('+'),
                         ),
