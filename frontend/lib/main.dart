@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:html';
 import 'package:flutter/material.dart';
@@ -85,10 +86,15 @@ class _TaskListState extends State<TaskList> {
                             var request = HttpRequest();
                             request.open('DELETE',
                                 'http://localhost:3000/api/notes/$taskid');
+                            var completer = Completer();
+                            request.onLoad.listen((_) {
+                              completer.complete();
+                            });
                             request.send();
-                            fetchTasks();
+                            await completer.future;
+                            await fetchTasks();
                           },
-                          child: Text('+'),
+                          child: Text('-'),
                         ),
                       ],
                     ),
