@@ -40,6 +40,17 @@ class _TaskListState extends State<TaskList> {
     });
   }
 
+  final TextEditingController taskController = TextEditingController();
+
+  Future<void> createTask() async {
+    final title = taskController.text;
+    final body = {"title": title};
+    final response = await http.post(
+        Uri.parse('http://localhost:3000/api/notes/'),
+        body: json.encode(body),
+        headers: {'Content-Type': 'application/json'});
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,8 +78,8 @@ class _TaskListState extends State<TaskList> {
                       ),
                       ElevatedButton(
                         onPressed: () async {
-                          var taskid = task['id'];
-                          var request = new HttpRequest();
+                          var taskid = task['_id'];
+                          var request = HttpRequest();
                           request.open('DELETE',
                               'http://localhost:3000/api/notes/$taskid');
                           request.send();
@@ -89,14 +100,16 @@ class _TaskListState extends State<TaskList> {
                     child: Container(
                   margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
                   color: Colors.grey,
-                  child: TextField(
+                  child: TextFormField(
+                    controller: taskController,
                     decoration: InputDecoration(hintText: 'adicionar nota'),
+                    keyboardType: TextInputType.text,
                   ),
                 )),
                 Container(
                   margin: EdgeInsets.only(right: 20, bottom: 20),
                   child: ElevatedButton(
-                    onPressed: () {},
+                    onPressed: createTask,
                     child: Text('+'),
                   ),
                 )
