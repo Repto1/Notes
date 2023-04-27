@@ -109,7 +109,7 @@ class _TaskListState extends State<TaskList> {
                   Expanded(
                       child: Container(
                     margin: EdgeInsets.only(bottom: 20, right: 20, left: 20),
-                    color: Colors.grey,
+                    color: Colors.black12,
                     child: TextFormField(
                       controller: taskController,
                       decoration: InputDecoration(hintText: 'adicionar nota'),
