@@ -79,12 +79,7 @@ class _AddNotesPageState extends State<AddNotesPage> {
     final id = note['_id'];
     final title = titleController.text;
     final description = descriptionController.text;
-    final completed = note['completed'];
-    final body = {
-      "title": title,
-      "description": description,
-      "completed": completed
-    };
+    final body = {"title": title, "description": description};
     // ignore: unused_local_variable
     final response = await http.put(
       Uri.parse('http://localhost:3000/api/notes/$id'),
@@ -92,7 +87,7 @@ class _AddNotesPageState extends State<AddNotesPage> {
       headers: {'Content-Type': 'application/json'},
     );
     if (response.statusCode == 200) {
-      print('Successfull Creation');
+      print('Successfull Update');
       showSuccessMessage('Successfull Update');
     } else {
       print('Failed Update');

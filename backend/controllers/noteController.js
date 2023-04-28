@@ -64,6 +64,7 @@ const noteController = {
     const id = req.params.id;
     const note = {
       title: req.body.title,
+      description: req.body.description,
     };
 
     const updateNote = await NoteModel.findByIdAndUpdate(id, note);
