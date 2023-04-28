@@ -5,6 +5,7 @@ const noteController = {
     try {
       const note = {
         title: req.body.title,
+        description: req.body.description,
       };
 
       const response = await NoteModel.create(note);
