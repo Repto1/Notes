@@ -37,18 +37,39 @@ class _NotesPageState extends State<NotesPage> {
           child: ListView.builder(
             itemCount: notes.length,
             itemBuilder: (BuildContext context, int index) {
-              final note = notes[index];
-              return ListTile(
-                title: Text(note['title']),
-                subtitle: Text(note['description']),
-                trailing: PopupMenuButton(
-                  itemBuilder: (context) {
-                    return [
-                      const PopupMenuItem(
-                        child: Text('Edit'),
-                      ),
-                    ];
-                  },
+              final note = notes[index] as Map;
+              final id = note['_id'] as String;
+              return Card(
+                borderOnForeground: true,
+                child: ListTile(
+                  title: Text(
+                    note['title'],
+                  ),
+                  subtitle: Text(
+                    note['description'],
+                  ),
+                  trailing: PopupMenuButton(
+                    onSelected: (value) {
+                      if (value == 'edit') {
+                        editButton(note);
+                      }
+                      if (value == 'delete') {
+                        deleteNote(id);
+                      }
+                    },
+                    itemBuilder: (context) {
+                      return [
+                        const PopupMenuItem(
+                          value: 'edit',
+                          child: Text('Edit'),
+                        ),
+                        const PopupMenuItem(
+                          value: 'delete',
+                          child: Text('Delete'),
+                        ),
+                      ];
+                    },
+                  ),
                 ),
               );
             },
@@ -59,24 +80,54 @@ class _NotesPageState extends State<NotesPage> {
         ),
       ),
       floatingActionButton: FloatingActionButton.extended(
-          onPressed: navigationButton, label: const Text('+')),
+        onPressed: navigationButton,
+        label: const Text('+'),
+      ),
     );
   }
 
-  void navigationButton() {
-    final route = MaterialPageRoute(builder: (context) => AddNotesPage());
-    Navigator.push(context, route);
+  Future<void> editButton(Map note) async {
+    final route = MaterialPageRoute(
+      builder: (context) => AddNotesPage(note: note),
+    );
+    await Navigator.push(context, route);
+    setState(() {
+      isLoading = true;
+    });
+    fetchNotes();
+  }
+
+  Future<void> navigationButton() async {
+    final route = MaterialPageRoute(
+      builder: (context) => AddNotesPage(),
+    );
+    await Navigator.push(context, route);
+    setState(() {
+      isLoading = true;
+    });
+    fetchNotes();
+  }
+
+  Future<void> deleteNote(String id) async {
+    final uri = Uri.parse('http://localhost:3000/api/notes/$id');
+    final response = await http.delete(uri);
+    fetchNotes();
   }
 
   Future<void> fetchNotes() async {
-    final response =
-        await http.get(Uri.parse('http://localhost:3000/api/notes'));
+    final response = await http.get(
+      Uri.parse('http://localhost:3000/api/notes'),
+    );
     final List<dynamic> notesJson = json.decode(response.body);
-    setState(() {
-      notes = notesJson;
-    });
-    setState(() {
-      isLoading = false;
-    });
+    setState(
+      () {
+        notes = notesJson;
+      },
+    );
+    setState(
+      () {
+        isLoading = false;
+      },
+    );
   }
 }
