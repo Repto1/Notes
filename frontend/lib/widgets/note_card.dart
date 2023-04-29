@@ -19,15 +19,21 @@ class NoteCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final id = note['_id'] as String;
     return Card(
+      shape: Border(),
+      color: Color.fromARGB(255, 255, 232, 147),
+      surfaceTintColor: Colors.amber,
       borderOnForeground: true,
       child: ListTile(
         title: Text(
           note['title'],
+          style: TextStyle(color: Colors.black, fontSize: 20),
         ),
         subtitle: Text(
           note['description'],
+          style: TextStyle(color: Colors.black, fontSize: 16),
         ),
         trailing: PopupMenuButton(
+          color: Colors.grey[900],
           onSelected: (value) {
             if (value == 'edit') {
               editButton(note);
