@@ -1,10 +1,10 @@
 import 'dart:convert';
+import 'package:frontend/services/note_service.dart';
 import 'package:http/http.dart' as http;
 
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
+
+import '../utils/snackbar_helper.dart';
 
 class AddNotesPage extends StatefulWidget {
   final Map? note;
@@ -81,14 +81,11 @@ class _AddNotesPageState extends State<AddNotesPage> {
     final description = descriptionController.text;
     final body = {"title": title, "description": description};
     // ignore: unused_local_variable
-    final response = await http.put(
-      Uri.parse('http://localhost:3000/api/notes/$id'),
-      body: json.encode(body),
-      headers: {'Content-Type': 'application/json'},
-    );
-    if (response.statusCode == 200) {
+    final response = await NoteService.updateNote(id, body);
+    if (response) {
       print('Successfull Update');
-      showSuccessMessage('Successfull Update');
+      // ignore: use_build_context_synchronously
+      showSuccessMessage(context, message: 'Successfull Update');
     } else {
       print('Failed Update');
       print(id);
@@ -100,24 +97,16 @@ class _AddNotesPageState extends State<AddNotesPage> {
     final description = descriptionController.text;
     final body = {"title": title, "description": description};
     // ignore: unused_local_variable
-    final response = await http.post(
-      Uri.parse('http://localhost:3000/api/notes/'),
-      body: json.encode(body),
-      headers: {'Content-Type': 'application/json'},
-    );
-    if (response.statusCode == 201) {
+    final response = await NoteService.createNote(body);
+    if (response) {
       print('Successfull Creation');
       titleController.text = '';
       descriptionController.text = '';
 
-      showSuccessMessage('Successfull Creation');
+      // ignore: use_build_context_synchronously
+      showSuccessMessage(context, message: 'Successfull Creation');
     } else {
       print('Failed Creation');
     }
-  }
-
-  void showSuccessMessage(String message) {
-    final snackBar = SnackBar(content: Text(message));
-    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

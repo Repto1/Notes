@@ -1,9 +1,11 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/framework.dart';
-import 'package:flutter/src/widgets/placeholder.dart';
 import 'package:frontend/pages/add_page.dart';
-import 'dart:convert';
-import 'package:http/http.dart' as http;
+import 'package:frontend/services/note_service.dart';
+import 'package:frontend/widgets/note_card.dart';
+
+import '../utils/snackbar_helper.dart';
 
 class NotesPage extends StatefulWidget {
   const NotesPage({super.key});
@@ -14,7 +16,7 @@ class NotesPage extends StatefulWidget {
 
 class _NotesPageState extends State<NotesPage> {
   bool isLoading = true;
-  List notes = [];
+  List<dynamic> notes = [];
 
   get index => int;
 
@@ -34,45 +36,27 @@ class _NotesPageState extends State<NotesPage> {
         visible: isLoading,
         replacement: RefreshIndicator(
           onRefresh: fetchNotes,
-          child: ListView.builder(
-            itemCount: notes.length,
-            itemBuilder: (BuildContext context, int index) {
-              final note = notes[index] as Map;
-              final id = note['_id'] as String;
-              return Card(
-                borderOnForeground: true,
-                child: ListTile(
-                  title: Text(
-                    note['title'],
-                  ),
-                  subtitle: Text(
-                    note['description'],
-                  ),
-                  trailing: PopupMenuButton(
-                    onSelected: (value) {
-                      if (value == 'edit') {
-                        editButton(note);
-                      }
-                      if (value == 'delete') {
-                        deleteNote(id);
-                      }
-                    },
-                    itemBuilder: (context) {
-                      return [
-                        const PopupMenuItem(
-                          value: 'edit',
-                          child: Text('Edit'),
-                        ),
-                        const PopupMenuItem(
-                          value: 'delete',
-                          child: Text('Delete'),
-                        ),
-                      ];
-                    },
-                  ),
-                ),
-              );
-            },
+          child: Visibility(
+            visible: notes.isNotEmpty,
+            replacement: Center(
+              child: Text(
+                'No Notes',
+                style: Theme.of(context).textTheme.headlineMedium,
+              ),
+            ),
+            child: ListView.builder(
+              itemCount: notes.length,
+              itemBuilder: (BuildContext context, int index) {
+                final note = notes[index] as Map;
+                final id = note['_id'] as String;
+                return NoteCard(
+                  index: index,
+                  note: note,
+                  editButton: editButton,
+                  deleteNote: deleteNote,
+                );
+              },
+            ),
           ),
         ),
         child: const Center(
@@ -109,19 +93,16 @@ class _NotesPageState extends State<NotesPage> {
   }
 
   Future<void> deleteNote(String id) async {
-    final uri = Uri.parse('http://localhost:3000/api/notes/$id');
-    final response = await http.delete(uri);
+    final success = await NoteService.deleteNote(id);
+    showSuccessMessage(context, message: 'Successfull Delete');
     fetchNotes();
   }
 
   Future<void> fetchNotes() async {
-    final response = await http.get(
-      Uri.parse('http://localhost:3000/api/notes'),
-    );
-    final List<dynamic> notesJson = json.decode(response.body);
+    final response = await NoteService.fetchNotes();
     setState(
       () {
-        notes = notesJson;
+        notes = response;
       },
     );
     setState(
