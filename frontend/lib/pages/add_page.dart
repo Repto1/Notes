@@ -64,8 +64,12 @@ class _AddNotesPageState extends State<AddNotesPage> {
             height: 8,
           ),
           FloatingActionButton.extended(
+              backgroundColor: Color.fromARGB(255, 255, 232, 147),
               onPressed: isEdit ? updateNote : createNote,
-              label: Text(isEdit ? 'Edit note' : 'Add note'))
+              label: Text(
+                isEdit ? 'Edit note' : 'Add note',
+                style: TextStyle(fontSize: 20),
+              ))
         ],
       ),
     );

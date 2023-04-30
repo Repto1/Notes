@@ -65,7 +65,11 @@ class _NotesPageState extends State<NotesPage> {
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: navigationButton,
-        label: const Text('+'),
+        backgroundColor: Color.fromARGB(255, 255, 232, 147),
+        label: const Text(
+          '+',
+          style: TextStyle(fontSize: 18),
+        ),
       ),
     );
   }
