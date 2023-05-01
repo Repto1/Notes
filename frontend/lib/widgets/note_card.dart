@@ -31,6 +31,7 @@ class NoteCard extends StatelessWidget {
         subtitle: Text(
           note['description'],
           style: TextStyle(color: Colors.black, fontSize: 16),
+          maxLines: 8,
         ),
       ),
     );
