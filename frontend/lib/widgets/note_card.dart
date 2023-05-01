@@ -32,29 +32,6 @@ class NoteCard extends StatelessWidget {
           note['description'],
           style: TextStyle(color: Colors.black, fontSize: 16),
         ),
-        trailing: PopupMenuButton(
-          color: Colors.grey[900],
-          onSelected: (value) {
-            if (value == 'edit') {
-              editButton(note);
-            }
-            if (value == 'delete') {
-              deleteNote(id);
-            }
-          },
-          itemBuilder: (context) {
-            return [
-              const PopupMenuItem(
-                value: 'edit',
-                child: Text('Edit'),
-              ),
-              const PopupMenuItem(
-                value: 'delete',
-                child: Text('Delete'),
-              ),
-            ];
-          },
-        ),
       ),
     );
   }

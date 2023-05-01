@@ -26,6 +26,15 @@ class _NotesPageState extends State<NotesPage> {
     fetchNotes();
   }
 
+  Offset _tapPosition = Offset.zero;
+  void _getTapPosition(TapDownDetails tapPosition) {
+    final RenderBox renderBox = context.findRenderObject() as RenderBox;
+    setState(() {
+      _tapPosition = renderBox.globalToLocal(tapPosition.globalPosition);
+      print(_tapPosition);
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -49,15 +58,23 @@ class _NotesPageState extends State<NotesPage> {
               itemBuilder: (BuildContext context, int index) {
                 final note = notes[index] as Map;
                 final id = note['_id'] as String;
-                return NoteCard(
-                  index: index,
-                  note: note,
-                  editButton: editButton,
-                  deleteNote: deleteNote,
+                return GestureDetector(
+                  onTapDown: (position) {
+                    _getTapPosition(position);
+                  },
+                  onLongPress: () {
+                    _showContextMenu(context, note, id);
+                  },
+                  child: NoteCard(
+                    index: index,
+                    note: note,
+                    editButton: editButton,
+                    deleteNote: deleteNote,
+                  ),
                 );
               },
-              gridDelegate:
-                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
+              gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2),
             ),
           ),
         ),
@@ -116,5 +133,36 @@ class _NotesPageState extends State<NotesPage> {
         isLoading = false;
       },
     );
+  }
+
+  void _showContextMenu(context, note, id) async {
+    final RenderObject? overlay =
+        Overlay.of(context).context.findRenderObject();
+    final result = await showMenu(
+      context: context,
+      position: RelativeRect.fromRect(
+        Rect.fromLTWH(_tapPosition.dx, _tapPosition.dy, 10, 10),
+        Rect.fromLTWH(0, 0, overlay!.paintBounds.size.width,
+            overlay.paintBounds.size.height),
+      ),
+      items: [
+        const PopupMenuItem(
+          value: 'edit',
+          child: Text('Edit'),
+        ),
+        const PopupMenuItem(
+          value: 'delete',
+          child: Text('Delete'),
+        ),
+      ],
+    );
+    switch (result) {
+      case 'edit':
+        editButton(note);
+        break;
+      case 'delete':
+        deleteNote(id);
+        break;
+    }
   }
 }
