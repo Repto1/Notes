@@ -44,7 +44,7 @@ class _NotesPageState extends State<NotesPage> {
                 style: Theme.of(context).textTheme.headlineMedium,
               ),
             ),
-            child: ListView.builder(
+            child: GridView.builder(
               itemCount: notes.length,
               itemBuilder: (BuildContext context, int index) {
                 final note = notes[index] as Map;
@@ -56,6 +56,8 @@ class _NotesPageState extends State<NotesPage> {
                   deleteNote: deleteNote,
                 );
               },
+              gridDelegate:
+                  SliverGridDelegateWithFixedCrossAxisCount(crossAxisCount: 2),
             ),
           ),
         ),
