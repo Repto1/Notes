@@ -1,2 +1,2 @@
-# flutter-node-crud
- A flutter crud app with a node back-end
+# Notes
+ A notes app made using flutter in frontend and node in backend.
