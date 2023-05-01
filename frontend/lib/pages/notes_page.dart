@@ -31,7 +31,6 @@ class _NotesPageState extends State<NotesPage> {
     final RenderBox renderBox = context.findRenderObject() as RenderBox;
     setState(() {
       _tapPosition = renderBox.globalToLocal(tapPosition.globalPosition);
-      print(_tapPosition);
     });
   }
 
